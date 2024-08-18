@@ -9,7 +9,7 @@ HELP() {
     echo "-c Debug (Debug build)"
     echo "-c RelWithDebInfo"
     echo "-c Release"
-    echo "-m True (use multi-configuration generator)"
+    echo "-m (use multi-configuration generator)"
     echo
 }
 
@@ -23,7 +23,7 @@ do
             exit 0
             ;;
         c) config=${OPTARG};;
-        m) multiconfig=${OPTARG};;
+        m) multiconfig=true;;
         \?) # Incorrect option
             echo "Error: Invalid option"
             HELP

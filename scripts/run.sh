@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./build/bin/MyEngine
+./build/bin/Sandbox

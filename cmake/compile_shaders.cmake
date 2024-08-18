@@ -9,7 +9,7 @@ function(COMPILE_SHADERS)
         set(SPIRV_FILENAME "${CMAKE_SOURCE_DIR}/shaders/${GLSL_FILENAME}.spv")
         add_custom_command(
             OUTPUT ${SPIRV_FILENAME}
-            COMMAND "$ENV{GLSL_VALIDATOR}" -V ${GLSL} -o ${SPIRV_FILENAME}
+            COMMAND "glslangValidator" -V ${GLSL} -o ${SPIRV_FILENAME}
             DEPENDS ${GLSL})
         list(APPEND SPIRV_BINARY_FILES ${SPIRV_FILENAME})
     endforeach(GLSL)
