@@ -1,10 +1,12 @@
 #include "vk_engine.h"
 
+#include <algorithm>
+#include <array>
 #include <cassert>
 #include <chrono>
 #include <cstdint>
 #include <cstring>
-#include <fmt/core.h>
+#include <set>
 #include <stdexcept>
 #include <thread>
 
@@ -14,6 +16,7 @@
 #include <vector>
 #include <vulkan/vulkan_core.h>
 
+#include "Log.h"
 #include "file_helper.hpp"
 #include "vk_types.hpp"
 
@@ -241,7 +244,7 @@ void VulkanEngine::CreateInstance() {
   assert(!supportsValidation &&
          "Validation layers requested but not available!");
 
-  fmt::print("Creating vulkan instance!\n");
+  ME_CORE_INFO("Creating Vulkan instance!");
   VkApplicationInfo appInfo{};
   appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
   appInfo.pNext = nullptr;

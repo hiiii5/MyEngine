@@ -9,3 +9,5 @@
 #else
 #define EXPORTED
 #endif
+
+#define MYENGINE_API EXPORTED

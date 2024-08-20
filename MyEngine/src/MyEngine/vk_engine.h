@@ -1,15 +1,11 @@
 #pragma once
 
-#include <algorithm>
-#include <array>
 #include <cstdint>
-#include <filesystem>
-#include <fstream>
 #include <optional>
-#include <set>
 #include <vector>
 
 #include "Common.hpp"
+#include "Log.h"
 #include "vk_types.hpp"
 
 struct SDL_Window;
@@ -181,7 +177,7 @@ private:
                 VkDebugUtilsMessageTypeFlagsEXT messageType,
                 const VkDebugUtilsMessengerCallbackDataEXT *pCallbackData,
                 void *pUserData) {
-    fmt::print("ValidationLayer: {}\n", pCallbackData->pMessage);
+    ME_CORE_WARN("ValidationLayer: {0}", pCallbackData->pMessage);
     return VK_FALSE;
   }
 };

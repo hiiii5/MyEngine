@@ -4,8 +4,6 @@
 #include <vulkan/vk_enum_string_helper.h>
 #include <vulkan/vulkan.h>
 
-#include <fmt/core.h>
-
 #include <glm/glm.hpp>
 #include <glm/mat4x4.hpp>
 #include <glm/vec4.hpp>
@@ -44,7 +42,7 @@ struct Vertex {
 #define VK_CHECK(x)                                                            \
   {                                                                            \
     if (x != VK_SUCCESS) {                                                     \
-      fmt::print("Detected Vulkan error: {}\n", string_VkResult(x));           \
+      ME_CORE_ERROR("Detected Vulkan error: {0}", string_VkResult(x));         \
       abort();                                                                 \
     }                                                                          \
   }

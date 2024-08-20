@@ -1,7 +1,6 @@
 #pragma once
 
 #include <filesystem>
-#include <fmt/core.h>
 #include <fstream>
 #include <iterator>
 
@@ -44,7 +43,8 @@ static FsReadStatus ReadFile(const std::string &path, std::string *pContents) {
   std::filesystem::path filePath{path};
   filePath = MakeAbsolutePath(filePath);
   if (!std::filesystem::is_regular_file(filePath)) {
-    fmt::print("not a regular file: {}\n", filePath.c_str());
+    // TODO: ADD LOGGING
+    // fmt::print("not a regular file: {}\n", filePath.c_str());
     *pContents = "";
     return ERR_NOT_REGULAR_FILE;
   }
@@ -52,7 +52,8 @@ static FsReadStatus ReadFile(const std::string &path, std::string *pContents) {
   // Binary mode to get bytes of the file on the filesystem
   std::ifstream file(filePath, std::ios::in | std::ios::binary);
   if (!file.is_open()) {
-    fmt::print("unable to open file: {}\n", filePath.c_str());
+    // TODO: ADD LOGGING
+    // fmt::print("unable to open file: {}\n", filePath.c_str());
     *pContents = "";
     return ERR_NOT_OPEN;
   }
