@@ -110,6 +110,10 @@ void SDLWindow::Init(const WindowProperties &properties) {
 void SDLWindow::Shutdown() {
   SDL_DestroyWindow(m_Window);
   --s_SDLWindowCount;
+
+  if (s_SDLWindowCount == 0) {
+    SDL_Quit();
+  }
 }
 
 void SDLWindow::OnUpdate() {

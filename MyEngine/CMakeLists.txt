@@ -66,6 +66,8 @@ endif(WIN32)
 
 add_library(MyEngine SHARED ${SOURCE})
 
+target_compile_definitions(MyEngine PUBLIC $<$<CONFIG:Debug>:ME_DEBUG>)
+
 include_directories("${CMAKE_SOURCE_DIR}/MyEngine/src")
 target_precompile_headers(MyEngine PRIVATE
                           "${CMAKE_SOURCE_DIR}/MyEngine/src/mepch.h")
