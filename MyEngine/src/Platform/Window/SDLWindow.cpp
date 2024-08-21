@@ -18,7 +18,8 @@ SDLWindow::~SDLWindow() { Shutdown(); }
 static int windowEventCallback(void *pData, SDL_Event *event) {
   SDLWindow::WindowData data = *static_cast<SDLWindow::WindowData *>(pData);
 
-  if (event->type == SDL_WINDOWEVENT) {
+  switch (event->type) {
+  case SDL_WINDOWEVENT: {
     SDL_Window *win = SDL_GetWindowFromID(event->window.windowID);
 
     if (event->window.event == SDL_WINDOWEVENT_RESIZED) {
@@ -38,8 +39,6 @@ static int windowEventCallback(void *pData, SDL_Event *event) {
       data.EventCallback(event);
     }
   }
-
-  switch (event->type) {
   case SDL_KEYDOWN: {
     Key::KeyCode code = (Key::KeyCode)event->key.keysym.sym;
 
