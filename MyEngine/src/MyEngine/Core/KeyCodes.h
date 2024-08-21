@@ -2,6 +2,6 @@
 
 namespace MyEngine {
 namespace Key {
-using KeyCode = int32_t;
+using KeyCode = int;
 }
 } // namespace MyEngine
