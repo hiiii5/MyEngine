@@ -1,6 +1,9 @@
 #pragma once
 
-#include "MyEngine/Application.h"
-#include "MyEngine/Log.h"
+#include "MyEngine/Core/Base.h"
 
-#include "MyEngine/EntryPoint.h"
+#include "MyEngine/Core/Application.h"
+#include "MyEngine/Core/Log.h"
+
+#include "MyEngine/Core/KeyCodes.h"
+#include "MyEngine/Core/MouseCodes.h"

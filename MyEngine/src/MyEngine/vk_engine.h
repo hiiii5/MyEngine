@@ -4,8 +4,7 @@
 #include <optional>
 #include <vector>
 
-#include "Common.hpp"
-#include "Log.h"
+#include "MyEngine/Core/Log.h"
 #include "vk_types.hpp"
 
 struct SDL_Window;

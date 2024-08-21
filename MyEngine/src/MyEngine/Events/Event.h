@@ -1,8 +1,7 @@
 #pragma once
 
-#include "Common.hpp"
-#include <functional>
-#include <string>
+#include "MyEngine/Core/Base.h"
+#include "mepch.h"
 
 namespace MyEngine {
 enum class EventType {
@@ -14,6 +13,7 @@ enum class EventType {
   WindowMoved,
   KeyPressed,
   KeyReleased,
+  KeyTyped,
   MouseButtonPressed,
   MouseButtonReleased,
   MouseMoved,
@@ -30,7 +30,7 @@ enum EventCategory {
 };
 
 #define EVENT_CLASS_TYPE(type)                                                 \
-  static EventType GetStaticType() { return EventType::##type; }               \
+  static EventType GetStaticType() { return EventType::type; }                 \
   virtual EventType GetEventType() const override { return GetStaticType(); }  \
   virtual const char *GetName() const override { return #type; }
 
@@ -71,4 +71,8 @@ public:
 private:
   Event &m_Event;
 };
+
+inline std::ostream &operator<<(std::ostream &os, const Event &e) {
+  return os << e.ToString();
+}
 } // namespace MyEngine
