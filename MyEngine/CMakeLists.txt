@@ -22,6 +22,14 @@ set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/")
 set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/")
+
+if(LINUX)
+  set(THREADS_PREFER_PTHREAD_FLAG ON)
+endif()
+
+if(CMAKE_GENERATOR MATCHES "Visual Studio")
+  set(CMAKE_MSVC_RUNTIME_LIBRARY "MultiThreaded$<$<CONFIG:Debug>:Debug>")
+endif()
 # -------------------------------------------
 
 # -------------------------------------------
@@ -74,5 +82,11 @@ target_precompile_headers(MyEngine PRIVATE
 
 add_dependencies(MyEngine Shaders)
 
-target_link_libraries(MyEngine PRIVATE SDL2::SDL2 spdlog::spdlog)
+if(LINUX)
+  target_link_libraries(MyEngine PRIVATE SDL2::SDL2 spdlog::spdlog
+                                         Threads::Threads)
+else()
+  target_link_libraries(MyEngine PRIVATE SDL2::SDL2 spdlog::spdlog)
+endif()
+
 # -------------------------------------------
