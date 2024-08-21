@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MyEngine/Core/Base.h"
+#include "MyEngine/Core/LayerStack.h"
 #include "MyEngine/Core/Window.h"
 #include "MyEngine/Events/ApplicationEvent.h"
 
@@ -11,6 +12,9 @@ class EXPORTED Application {
 public:
   Application();
   virtual ~Application();
+
+  void PushLayer(Layer *layer);
+  void PushOverlay(Layer *layer);
 
   Window &GetWindow() { return *m_Window; }
 
@@ -23,6 +27,7 @@ private:
 
   Unique<Window> m_Window;
   bool m_Running = true;
+  LayerStack m_LayerStack;
 
   friend int ::main(int argc, char *argv[]);
 };
