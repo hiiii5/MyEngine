@@ -16,7 +16,7 @@ SDLWindow::SDLWindow(const WindowProperties &properties) { Init(properties); }
 SDLWindow::~SDLWindow() { Shutdown(); }
 
 static int windowEventCallback(void *pData, SDL_Event *event) {
-  SDLWindow::WindowData *data = static_cast<SDLWindow::WindowData *>(pData);
+  SDLWindow::WindowData data = *static_cast<SDLWindow::WindowData *>(pData);
 
   if (event->type == SDL_WINDOWEVENT) {
     SDL_Window *win = SDL_GetWindowFromID(event->window.windowID);
@@ -25,56 +25,59 @@ static int windowEventCallback(void *pData, SDL_Event *event) {
 
       int width = 0, height = 0;
       SDL_GetWindowSize(win, &width, &height);
-
-      data->Width = width;
-      data->Height = height;
+      data.Width = width;
+      data.Height = height;
 
       WindowResizeEvent event(width, height);
-      data->EventCallback(event);
+      data.EventCallback(event);
     }
 
     if (event->window.event == SDL_WINDOWEVENT_CLOSE) {
       WindowCloseEvent event;
-      data->EventCallback(event);
+      ME_CORE_INFO("Closing window");
+      data.EventCallback(event);
     }
   }
 
-  if (event->type == SDL_KEYDOWN) {
+  switch (event->type) {
+  case SDL_KEYDOWN: {
     Key::KeyCode code = (Key::KeyCode)event->key.keysym.sym;
 
     if (event->key.repeat == 0) {
       KeyPressedEvent keyPressEvent(code, false);
-      data->EventCallback(keyPressEvent);
+      data.EventCallback(keyPressEvent);
     } else {
       KeyPressedEvent keyPressEvent(code, true);
-      data->EventCallback(keyPressEvent);
+      data.EventCallback(keyPressEvent);
     }
+    break;
   }
-
-  if (event->type == SDL_KEYUP) {
+  case SDL_KEYUP: {
     KeyReleasedEvent keyReleaseEvent((Key::KeyCode)event->key.keysym.sym);
-    data->EventCallback(keyReleaseEvent);
+    data.EventCallback(keyReleaseEvent);
+    break;
   }
-
-  if (event->type == SDL_MOUSEBUTTONDOWN) {
+  case SDL_MOUSEBUTTONDOWN: {
     MouseButtonPressedEvent mouseDownEvent(event->button.button);
-    data->EventCallback(mouseDownEvent);
+    data.EventCallback(mouseDownEvent);
+    break;
   }
-
-  if (event->type == SDL_MOUSEBUTTONUP) {
+  case SDL_MOUSEBUTTONUP: {
     MouseButtonReleasedEvent mouseUpEvent(event->button.button);
-    data->EventCallback(mouseUpEvent);
+    data.EventCallback(mouseUpEvent);
+    break;
   }
-
-  if (event->type == SDL_MOUSEWHEEL) {
+  case SDL_MOUSEWHEEL: {
     MouseScrolledEvent scrollEvent(event->wheel.preciseX,
                                    event->wheel.preciseY);
-    data->EventCallback(scrollEvent);
+    data.EventCallback(scrollEvent);
+    break;
   }
-
-  if (event->type == SDL_MOUSEMOTION) {
+  case SDL_MOUSEMOTION: {
     MouseMovedEvent moveEvent((float)event->motion.x, (float)event->motion.y);
-    data->EventCallback(moveEvent);
+    data.EventCallback(moveEvent);
+    break;
+  }
   }
 
   return 0;
@@ -118,6 +121,7 @@ void SDLWindow::Shutdown() {
 
 void SDLWindow::OnUpdate() {
   // TODO: swap context buffer;
+  SDL_PumpEvents();
 }
 
 void SDLWindow::SetVSync(bool enabled) { m_Data.VSync = enabled; }
