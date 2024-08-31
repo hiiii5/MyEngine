@@ -1,5 +1,6 @@
 
 #include "Application.h"
+#include "MyEngine/ImGui/ImGuiLayer.h"
 #include "MyEngine/Renderer/Renderer.h"
 #include "MyEngine/Time/Time.h"
 
@@ -13,6 +14,11 @@ Application::Application(const ApplicationSpecification &specification) {
   m_Window->Init();
   ME_CORE_ASSERT(m_Window != nullptr, "Window is null after creation!");
   m_Window->SetEventCallback(ME_BIND_EVENT_FN(Application::OnEvent));
+
+  Renderer::Init();
+
+  m_ImGuiLayer = new ImGuiLayer();
+  PushOverlay(m_ImGuiLayer);
 }
 
 Application::~Application() {

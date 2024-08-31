@@ -30,17 +30,17 @@ ImGuiLayer::~ImGuiLayer() {}
 
 void ImGuiLayer::OnAttach() {
   ME_CORE_INFO("Attaching ImGui layer!");
+
   IMGUI_CHECKVERSION();
-
   ImGui::CreateContext();
-
-  ImGui::StyleColorsDark();
-
   ImGuiIO &io = ImGui::GetIO();
   (void)io;
   // io.BackendFlags |= ImGuiBackendFlags_HasMouseCursors;
   // io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
+  io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+
+  ImGui::StyleColorsDark();
 
   ME_CORE_INFO("Getting app for ImGui layer!");
   Application &app = Application::Get();

@@ -109,7 +109,6 @@ void SDLWindow::Init(const WindowProperties &properties) {
     s_SDLWindowCount++;
 
     m_GraphicsContext = GraphicsContext::Create();
-    Renderer::Init();
 
     SDL_AddEventWatch(windowEventCallback, &m_Data);
   }
