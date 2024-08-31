@@ -4,6 +4,7 @@
 #include "MyEngine/Core/LayerStack.h"
 #include "MyEngine/Core/Window.h"
 #include "MyEngine/Events/ApplicationEvent.h"
+#include "MyEngine/ImGui/ImGuiLayer.h"
 
 int main(int argc, char **argv);
 
@@ -36,9 +37,12 @@ private:
   bool OnWindowResize(WindowResizeEvent &e);
 
   Unique<Window> m_Window;
+  ImGuiLayer *m_ImGuiLayer;
   ApplicationSpecification m_Specification;
   bool m_Running = true;
   LayerStack m_LayerStack;
+
+  unsigned long m_LastFrameTime = 0.0f;
 
   static Application *s_Instance;
 

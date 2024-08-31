@@ -1,4 +1,3 @@
-#include "MyEngine/Events/Event.h"
 #include "mepch.h"
 
 #include "MyEngine/ImGui/ImGuiLayer.h"
@@ -11,17 +10,18 @@
 
 #include <SDL.h>
 #include <SDL_vulkan.h>
+#include <vulkan/vulkan_core.h>
 
 #include "MyEngine/Core/Application.h"
+#include "MyEngine/Events/Event.h"
 #include "Platform/Vulkan/VulkanContext.h"
 
 namespace MyEngine {
 static void check_vk_result(VkResult err) {
   if (err == 0)
     return;
-  fprintf(stderr, "[vulkan] Error: VkResult = %d\n", err);
-  if (err < 0)
-    abort();
+  ME_CORE_ERROR("[ImGui Vulkan] VkResult = {0}\n", (int)err);
+  ME_CORE_ASSERT(false);
 }
 
 ImGuiLayer::ImGuiLayer() : Layer("ImGuiLayer") {}
@@ -80,7 +80,19 @@ void ImGuiLayer::OnDetach() {
   ImGui::DestroyContext();
 }
 
-void ImGuiLayer::OnUpdate() {
+void ImGuiLayer::Begin() {
+  Application &app = Application::Get();
+  Window &window = app.GetWindow();
+  VulkanContext *context =
+      static_cast<VulkanContext *>(window.GetGraphicsContext());
+
+  ImGui_ImplVulkan_SetMinImageCount(context->MinImageCount);
+  ImGui_ImplVulkan_NewFrame();
+  ImGui_ImplSDL2_NewFrame();
+  ImGui::NewFrame();
+}
+
+void ImGuiLayer::End() {
   Application &app = Application::Get();
   Window &window = app.GetWindow();
   VulkanContext *context =
@@ -88,15 +100,6 @@ void ImGuiLayer::OnUpdate() {
 
   ImGuiIO &io = ImGui::GetIO();
   io.DisplaySize = ImVec2(window.GetWidth(), window.GetHeight());
-
-  ImGui_ImplVulkan_SetMinImageCount(context->MinImageCount);
-  ImGui_ImplVulkan_NewFrame();
-  ImGui_ImplSDL2_NewFrame();
-  ImGui::NewFrame();
-
-  static bool show = true;
-
-  ImGui::ShowDemoWindow(&show);
 
   ImGui::Render();
   ImGui_ImplVulkan_RenderDrawData(

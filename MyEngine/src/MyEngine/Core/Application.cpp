@@ -1,6 +1,7 @@
 
 #include "Application.h"
 #include "MyEngine/Renderer/Renderer.h"
+#include "MyEngine/Time/Time.h"
 
 namespace MyEngine {
 Application *Application::s_Instance = nullptr;
@@ -32,11 +33,23 @@ void Application::PushOverlay(Layer *layer) {
 
 void Application::Run() {
   while (m_Running) {
-    Renderer::BeginFrame();
+    unsigned long milliseconds = Time::GetTime();
+    Timestep timestep = milliseconds - m_LastFrameTime;
+    m_LastFrameTime = milliseconds;
 
     for (Layer *layer : m_LayerStack) {
-      layer->OnUpdate();
+      layer->OnUpdate(timestep);
     }
+
+    Renderer::BeginFrame();
+
+    m_ImGuiLayer->Begin();
+
+    for (Layer *layer : m_LayerStack) {
+      layer->OnImGuiRender();
+    }
+
+    m_ImGuiLayer->End();
 
     Renderer::EndFrame();
 
