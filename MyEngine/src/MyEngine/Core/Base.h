@@ -54,4 +54,5 @@ constexpr Ref<T> CreateRef(Args &&...args) {
 }
 } // namespace MyEngine
 
+#include "MyEngine/Core/Assert.h"
 #include "MyEngine/Core/Log.h"

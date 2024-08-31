@@ -3,11 +3,15 @@
 #include "MyEngine/Core/LayerStack.h"
 
 namespace MyEngine {
-LayerStack::~LayerStack() {
+LayerStack::~LayerStack() { Cleanup(); }
+
+void LayerStack::Cleanup() {
   for (Layer *layer : m_Layers) {
     layer->OnDetach();
     delete layer;
   }
+
+  m_Layers.clear();
 }
 
 void LayerStack::PushLayer(Layer *layer) {

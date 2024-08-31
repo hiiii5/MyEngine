@@ -20,8 +20,6 @@ set(CMAKE_CXX_STANDARD 17)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_POSITION_INDEPENDENT_CODE TRUE)
 set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
-set(CMAKE_RUNTIME_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/")
-set(CMAKE_LIBRARY_OUTPUT_DIRECTORY "${CMAKE_BINARY_DIR}/bin/")
 
 if(LINUX)
   set(THREADS_PREFER_PTHREAD_FLAG ON)
@@ -50,6 +48,23 @@ find_sdl()
 
 include("${CMAKE_SOURCE_DIR}/cmake/find_spdlog.cmake")
 find_spdlog()
+
+# IMGUI is special
+set(IMGUI_PATH "${CMAKE_SOURCE_DIR}/MyEngine/vendor/imgui")
+file(
+  GLOB
+  IMGUI_SOURCES
+  "${IMGUI_PATH}/imgui.cpp"
+  "${IMGUI_PATH}/imgui_demo.cpp"
+  "${IMGUI_PATH}/imgui_draw.cpp"
+  "${IMGUI_PATH}/imgui_tables.cpp"
+  "${IMGUI_PATH}/imgui_widgets.cpp"
+  # backend bindings
+  "${IMGUI_PATH}/backends/imgui_impl_sdl2.cpp"
+  "${IMGUI_PATH}/backends/imgui_impl_vulkan.cpp")
+add_library(ImGui STATIC ${IMGUI_SOURCES})
+target_include_directories(ImGui PUBLIC ${IMGUI_PATH} "${IMGUI_PATH}/backends")
+target_link_libraries(ImGui PRIVATE SDL2::SDL2 Vulkan::Vulkan)
 # -------------------------------------------
 
 # -------------------------------------------
@@ -83,10 +98,10 @@ target_precompile_headers(MyEngine PRIVATE
 add_dependencies(MyEngine Shaders)
 
 if(LINUX)
-  target_link_libraries(MyEngine PRIVATE SDL2::SDL2 spdlog::spdlog
+  target_link_libraries(MyEngine PRIVATE ImGui SDL2::SDL2 spdlog::spdlog
                                          Threads::Threads)
 else()
-  target_link_libraries(MyEngine PRIVATE SDL2::SDL2 spdlog::spdlog)
+  target_link_libraries(MyEngine PRIVATE ImGui SDL2::SDL2 spdlog::spdlog)
 endif()
 
 # -------------------------------------------

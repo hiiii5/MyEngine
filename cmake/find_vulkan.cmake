@@ -45,5 +45,5 @@ function(FIND_VULKAN)
   # Define a library for Vulkan
   add_library(vulkan INTERFACE)
   target_include_directories(vulkan INTERFACE ${vulkanhpp_SOURCE_DIR})
-  target_link_libraries(vulkan INTERFACE Vulkan::Headers)
+  target_link_libraries(vulkan INTERFACE Vulkan::Vulkan)
 endfunction()

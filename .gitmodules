@@ -1,0 +1,3 @@
+[submodule "MyEngine/vendor/imgui"]
+	path = MyEngine/vendor/imgui
+	url = https://github.com/ocornut/imgui.git

@@ -1,13 +1,24 @@
 
 #include "Application.h"
+#include "MyEngine/Renderer/Renderer.h"
 
 namespace MyEngine {
-Application::Application() {
+Application *Application::s_Instance = nullptr;
+
+Application::Application(const ApplicationSpecification &specification) {
+  s_Instance = this;
+
   m_Window = Window::Create();
+  m_Window->Init();
+  ME_CORE_ASSERT(m_Window != nullptr, "Window is null after creation!");
   m_Window->SetEventCallback(ME_BIND_EVENT_FN(Application::OnEvent));
 }
 
-Application::~Application() {}
+Application::~Application() {
+  Renderer::WaitForIdle();
+  m_LayerStack.Cleanup();
+  Renderer::Shutdown();
+}
 
 void Application::PushLayer(Layer *layer) {
   m_LayerStack.PushLayer(layer);
@@ -21,15 +32,21 @@ void Application::PushOverlay(Layer *layer) {
 
 void Application::Run() {
   while (m_Running) {
+    Renderer::BeginFrame();
+
     for (Layer *layer : m_LayerStack) {
       layer->OnUpdate();
     }
 
+    Renderer::EndFrame();
+
     m_Window->OnUpdate();
+
+    Renderer::PresentFrame();
   }
 }
 
-void Application::OnEvent(Event &e) {
+void Application::OnEvent(Event &e, void *pData) {
   EventDispatcher dispatcher(e);
 
   dispatcher.Dispatch<WindowCloseEvent>(
@@ -41,7 +58,7 @@ void Application::OnEvent(Event &e) {
     if (e.Handled) {
       break;
     }
-    (*it)->OnEvent(e);
+    (*it)->OnEvent(e, pData);
   }
 }
 

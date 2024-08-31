@@ -9,6 +9,8 @@ public:
   LayerStack() = default;
   ~LayerStack();
 
+  void Cleanup();
+
   void PushLayer(Layer *layer);
   void PushOverlay(Layer *overlay);
   void PopLayer(Layer *layer);

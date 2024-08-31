@@ -95,7 +95,6 @@ public:
   bool FrameBufferResized = false;
 
   VkInstance Instance;                     // Vulkan library handle
-  VkDebugUtilsMessengerEXT DebugMessenger; // Vulkan debug output handle
   VkPhysicalDevice ChosenGPU;              // GPU chosen as the default device
   VkDevice Device;                         // Vulkan device for commands
   VkQueue GraphicsQueue;                   // Graphics queue

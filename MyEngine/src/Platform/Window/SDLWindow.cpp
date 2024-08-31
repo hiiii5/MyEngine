@@ -5,24 +5,26 @@
 #include "MyEngine/Events/ApplicationEvent.h"
 #include "MyEngine/Events/KeyEvent.h"
 #include "MyEngine/Events/MouseEvent.h"
+#include "MyEngine/Renderer/GraphicsContext.h"
+#include "MyEngine/Renderer/Renderer.h"
 
 // TODO: Import graphics context
 
 namespace MyEngine {
 static uint8_t s_SDLWindowCount = 0;
 
-SDLWindow::SDLWindow(const WindowProperties &properties) { Init(properties); }
+SDLWindow::SDLWindow(const WindowProperties &properties) {}
 
 SDLWindow::~SDLWindow() { Shutdown(); }
 
-static int windowEventCallback(void *pData, SDL_Event *event) {
+static int windowEventCallback(void *pData, SDL_Event *e) {
   SDLWindow::WindowData data = *static_cast<SDLWindow::WindowData *>(pData);
 
-  switch (event->type) {
+  switch (e->type) {
   case SDL_WINDOWEVENT: {
-    SDL_Window *win = SDL_GetWindowFromID(event->window.windowID);
+    SDL_Window *win = SDL_GetWindowFromID(e->window.windowID);
 
-    if (event->window.event == SDL_WINDOWEVENT_RESIZED) {
+    if (e->window.event == SDL_WINDOWEVENT_RESIZED) {
 
       int width = 0, height = 0;
       SDL_GetWindowSize(win, &width, &height);
@@ -30,51 +32,50 @@ static int windowEventCallback(void *pData, SDL_Event *event) {
       data.Height = height;
 
       WindowResizeEvent event(width, height);
-      data.EventCallback(event);
+      data.EventCallback(event, (void *)e);
     }
 
-    if (event->window.event == SDL_WINDOWEVENT_CLOSE) {
+    if (e->window.event == SDL_WINDOWEVENT_CLOSE) {
       WindowCloseEvent event;
       ME_CORE_INFO("Closing window");
-      data.EventCallback(event);
+      data.EventCallback(event, (void *)e);
     }
   }
   case SDL_KEYDOWN: {
-    Key::KeyCode code = (Key::KeyCode)event->key.keysym.sym;
+    Key::KeyCode code = (Key::KeyCode)e->key.keysym.sym;
 
-    if (event->key.repeat == 0) {
+    if (e->key.repeat == 0) {
       KeyPressedEvent keyPressEvent(code, false);
-      data.EventCallback(keyPressEvent);
+      data.EventCallback(keyPressEvent, (void *)e);
     } else {
       KeyPressedEvent keyPressEvent(code, true);
-      data.EventCallback(keyPressEvent);
+      data.EventCallback(keyPressEvent, (void *)e);
     }
     break;
   }
   case SDL_KEYUP: {
-    KeyReleasedEvent keyReleaseEvent((Key::KeyCode)event->key.keysym.sym);
-    data.EventCallback(keyReleaseEvent);
+    KeyReleasedEvent keyReleaseEvent((Key::KeyCode)e->key.keysym.sym);
+    data.EventCallback(keyReleaseEvent, (void *)e);
     break;
   }
   case SDL_MOUSEBUTTONDOWN: {
-    MouseButtonPressedEvent mouseDownEvent(event->button.button);
-    data.EventCallback(mouseDownEvent);
+    MouseButtonPressedEvent mouseDownEvent(e->button.button);
+    data.EventCallback(mouseDownEvent, (void *)e);
     break;
   }
   case SDL_MOUSEBUTTONUP: {
-    MouseButtonReleasedEvent mouseUpEvent(event->button.button);
-    data.EventCallback(mouseUpEvent);
+    MouseButtonReleasedEvent mouseUpEvent(e->button.button);
+    data.EventCallback(mouseUpEvent, (void *)e);
     break;
   }
   case SDL_MOUSEWHEEL: {
-    MouseScrolledEvent scrollEvent(event->wheel.preciseX,
-                                   event->wheel.preciseY);
-    data.EventCallback(scrollEvent);
+    MouseScrolledEvent scrollEvent(e->wheel.preciseX, e->wheel.preciseY);
+    data.EventCallback(scrollEvent, (void *)e);
     break;
   }
   case SDL_MOUSEMOTION: {
-    MouseMovedEvent moveEvent((float)event->motion.x, (float)event->motion.y);
-    data.EventCallback(moveEvent);
+    MouseMovedEvent moveEvent((float)e->motion.x, (float)e->motion.y);
+    data.EventCallback(moveEvent, (void *)e);
     break;
   }
   }
@@ -105,6 +106,11 @@ void SDLWindow::Init(const WindowProperties &properties) {
                                 SDL_WINDOWPOS_UNDEFINED, (int)m_Data.Width,
                                 (int)m_Data.Height, windowFlags);
 
+    s_SDLWindowCount++;
+
+    m_GraphicsContext = GraphicsContext::Create();
+    Renderer::Init();
+
     SDL_AddEventWatch(windowEventCallback, &m_Data);
   }
 }
@@ -121,6 +127,8 @@ void SDLWindow::Shutdown() {
 void SDLWindow::OnUpdate() {
   // TODO: swap context buffer;
   SDL_PumpEvents();
+
+  // m_GraphicsContext->SwapBuffers();
 }
 
 void SDLWindow::SetVSync(bool enabled) { m_Data.VSync = enabled; }

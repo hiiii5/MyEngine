@@ -2,6 +2,7 @@
 
 #include "MyEngine/Core/Base.h"
 #include "MyEngine/Events/Event.h"
+#include "MyEngine/Renderer/GraphicsContext.h"
 
 namespace MyEngine {
 struct WindowProperties {
@@ -16,10 +17,12 @@ struct WindowProperties {
 
 class Window {
 public:
-  using EventCallbackFn = std::function<void(Event &)>;
+  using EventCallbackFn = std::function<void(Event &, void *pData)>;
 
   virtual ~Window() = default;
 
+  virtual void
+  Init(const WindowProperties &properties = WindowProperties()) = 0;
   virtual void OnUpdate() = 0;
 
   virtual uint32_t GetWidth() const = 0;
@@ -30,6 +33,7 @@ public:
   virtual bool IsVsyncEnabled() const = 0;
 
   virtual void *GetNativeWindow() const = 0;
+  virtual GraphicsContext *GetGraphicsContext() const = 0;
 
   static Unique<Window>
   Create(const WindowProperties &properties = WindowProperties());

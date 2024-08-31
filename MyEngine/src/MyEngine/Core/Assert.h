@@ -6,7 +6,7 @@
 #include <filesystem>
 
 #ifdef ME_ENABLE_ASSERTS
-#define ME_INTERNAL_ASSERT_IMPLE(type, check, msg, ...)                        \
+#define ME_INTERNAL_ASSERT_IMPL(type, check, msg, ...)                         \
   {                                                                            \
     if (!(check)) {                                                            \
       ME##type##ERROR(msg, __VA_ARGS__);                                       \
@@ -14,7 +14,7 @@
     }                                                                          \
   }
 #define ME_INTERNAL_ASSERT_WITH_MSG(type, check, ...)                          \
-  ME_INTERNAL_ASSERT_IMPLE(type, check, "Assertion failed: {0}", __VA_ARGS__)
+  ME_INTERNAL_ASSERT_IMPL(type, check, "Assertion failed: {0}", __VA_ARGS__)
 #define ME_INTERNAL_ASSERT_NO_MSG(type, check)                                 \
   ME_INTERNAL_ASSERT_IMPL(type, check, "Assertion '{0}' failed at {1}:{2}",    \
                           ME_STRINGIFY_MACRO(check),                           \

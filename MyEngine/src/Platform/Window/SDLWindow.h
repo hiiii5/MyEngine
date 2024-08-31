@@ -2,6 +2,8 @@
 
 #include "MyEngine/Core/Window.h"
 
+#include "MyEngine/Renderer/GraphicsContext.h"
+
 #include <SDL2/SDL.h>
 
 namespace MyEngine {
@@ -9,6 +11,7 @@ class SDLWindow : public Window {
 public:
   SDLWindow(const WindowProperties &properties);
   virtual ~SDLWindow();
+  virtual void Init(const WindowProperties &properties) override;
 
   void OnUpdate() override;
 
@@ -24,6 +27,10 @@ public:
 
   virtual void *GetNativeWindow() const override { return m_Window; }
 
+  virtual GraphicsContext *GetGraphicsContext() const override {
+    return m_GraphicsContext.get();
+  }
+
   struct WindowData {
     std::string Title;
     unsigned int Width, Height;
@@ -33,11 +40,12 @@ public:
   };
 
 private:
-  virtual void Init(const WindowProperties &properties);
   virtual void Shutdown();
 
   SDL_Window *m_Window;
 
   WindowData m_Data;
+
+  Unique<GraphicsContext> m_GraphicsContext;
 };
 }; // namespace MyEngine
