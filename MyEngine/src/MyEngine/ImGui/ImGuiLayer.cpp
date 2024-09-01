@@ -44,6 +44,10 @@ void ImGuiLayer::OnAttach() {
 
   ImGui::StyleColorsDark();
 
+  ImGuiStyle &style = ImGui::GetStyle();
+  style.WindowRounding = 0.0f;
+  style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+
   ME_CORE_INFO("Getting app for ImGui layer!");
   Application &app = Application::Get();
   ME_CORE_INFO("Getting window for ImGui layer!");
