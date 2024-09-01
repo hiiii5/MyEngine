@@ -23,7 +23,7 @@ public:
   // virtual uint64_t CreateVertexBuffer(float *vertices, uint32_t size) = 0;
   // virtual uint64_t CreateIndexBuffer(uint32_t *indices, uint32_t count) = 0;
 
-  virtual void BeginFrame(GraphicsContext *ctx) = 0;
+  virtual bool BeginFrame(GraphicsContext *ctx) = 0;
   virtual void EndFrame(GraphicsContext *ctx) = 0;
   virtual void PresentFrame(GraphicsContext *ctx) = 0;
   virtual void WaitForIdle() = 0;

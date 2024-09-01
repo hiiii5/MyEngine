@@ -75,6 +75,7 @@ public:
   VkPipelineCache PipelineCache = VK_NULL_HANDLE;
   VkDescriptorPool DescriptorPool = VK_NULL_HANDLE;
   uint32_t MinImageCount = 2;
+  bool RebuildSwapchain = false;
 
   VulkanWindow Window;
 

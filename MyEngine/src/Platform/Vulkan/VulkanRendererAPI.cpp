@@ -37,6 +37,7 @@ void VulkanRendererAPI::SetViewport(uint32_t x, uint32_t y, uint32_t width,
   Application &app = Application::Get();
   Window &win = app.GetWindow();
   VulkanContext *ctx = static_cast<VulkanContext *>(win.GetGraphicsContext());
+  CreateOrResizeWindow(ctx, x, y, width, height);
 }
 
 void VulkanRendererAPI::SetClearColor(const glm::vec4 &color) {
@@ -379,18 +380,18 @@ void VulkanRendererAPI::CreateOrResizeWindow(VulkanContext *context, uint32_t x,
   CreateWindowCommandBuffers(context);
 }
 
-// TODO: Chane assert docs to match function
 void VulkanRendererAPI::CreateWindowSwapchain(VulkanContext *context,
                                               uint32_t width, uint32_t height) {
   VkResult err;
   VkSwapchainKHR oldSwapchain = context->Window.Swapchain;
   context->Window.Swapchain = VK_NULL_HANDLE;
   err = vkDeviceWaitIdle(context->LogicalDevice);
-  ME_CORE_ASSERT(err == VK_SUCCESS, "Unale to wait for device idle to create "
+  ME_CORE_ASSERT(err == VK_SUCCESS, "Unable to wait for device idle to create "
                                     "swapchain when setting up vulkan!");
 
   // Cleanup old memory
   {
+    // Destroy frames
     for (uint32_t i = 0; i < context->Window.ImageCount; i++) {
       VulkanFrame *fd = &context->Window.Frames[i];
       vkDestroyFence(context->LogicalDevice, fd->Fence,
@@ -409,6 +410,7 @@ void VulkanRendererAPI::CreateWindowSwapchain(VulkanContext *context,
                            context->AllocationCallback);
     }
 
+    // Destroy Semaphores
     for (uint32_t i = 0; i < context->Window.SemaphoreCount; i++) {
       VulkanFrameSemaphores *fsd = &context->Window.FrameSemaphores[i];
       vkDestroySemaphore(context->LogicalDevice, fsd->ImageAcquiredSemaphore,
@@ -425,14 +427,15 @@ void VulkanRendererAPI::CreateWindowSwapchain(VulkanContext *context,
     context->Window.Frames = nullptr;
     context->Window.FrameSemaphores = nullptr;
     context->Window.ImageCount = 0;
+
     if (context->Window.RenderPass) {
       vkDestroyRenderPass(context->LogicalDevice, context->Window.RenderPass,
                           context->AllocationCallback);
     }
-    if (context->Window.Pipeline) {
-      vkDestroyPipeline(context->LogicalDevice, context->Window.Pipeline,
-                        context->AllocationCallback);
-    }
+    // if (context->Window.Pipeline) {
+    //   vkDestroyPipeline(context->LogicalDevice, context->Window.Pipeline,
+    //                     context->AllocationCallback);
+    // }
   }
 
   if (context->MinImageCount == 0) {
@@ -688,8 +691,20 @@ void VulkanRendererAPI::CreateWindowCommandBuffers(VulkanContext *context) {
   }
 }
 
-void VulkanRendererAPI::BeginFrame(GraphicsContext *ctx) {
+bool VulkanRendererAPI::BeginFrame(GraphicsContext *ctx) {
+  Application &app = Application::Get();
+  Window &window = app.GetWindow();
   VulkanContext *context = static_cast<VulkanContext *>(ctx);
+
+  if (window.GetWidth() > 0 && window.GetHeight() > 0 &&
+      (context->RebuildSwapchain ||
+       context->Window.Width != window.GetWidth() ||
+       context->Window.Height != window.GetHeight())) {
+    SetViewport(0, 0, window.GetWidth(), window.GetHeight());
+    context->Window.FrameIndex = 0;
+    context->RebuildSwapchain = false;
+  }
+
   VkResult err;
 
   VkSemaphore imageAcquiredSemaphore =
@@ -698,10 +713,13 @@ void VulkanRendererAPI::BeginFrame(GraphicsContext *ctx) {
   err = vkAcquireNextImageKHR(context->LogicalDevice, context->Window.Swapchain,
                               UINT64_MAX, imageAcquiredSemaphore,
                               VK_NULL_HANDLE, &context->Window.FrameIndex);
+  if (err == VK_ERROR_OUT_OF_DATE_KHR || err == VK_SUBOPTIMAL_KHR) {
+    context->RebuildSwapchain = true;
+    return false;
+  }
   ME_CORE_ASSERT(err == VK_SUCCESS,
                  "Unable to acquire next image when beginning vulkan frame!");
 
-  // TODO: Swapchain rebuild
   VulkanFrame *fd = context->Window.GetCurrentFrame();
   {
     err = vkWaitForFences(context->LogicalDevice, 1, &fd->Fence, VK_TRUE,
@@ -739,6 +757,8 @@ void VulkanRendererAPI::BeginFrame(GraphicsContext *ctx) {
     info.pClearValues = &context->Window.ClearValue;
     vkCmdBeginRenderPass(fd->CommandBuffer, &info, VK_SUBPASS_CONTENTS_INLINE);
   }
+
+  return true;
 }
 
 void VulkanRendererAPI::EndFrame(GraphicsContext *ctx) {
@@ -775,9 +795,11 @@ void VulkanRendererAPI::EndFrame(GraphicsContext *ctx) {
 
 void VulkanRendererAPI::PresentFrame(GraphicsContext *ctx) {
   VulkanContext *context = static_cast<VulkanContext *>(ctx);
-  // TODO: Swapchain rebuild
 
-  // TODO: render complete semaphore
+  if (context->RebuildSwapchain) {
+    return;
+  }
+
   VkSemaphore renderCompleteSemaphore =
       context->Window.GetRenderCompleteSemaphore();
 
@@ -790,7 +812,7 @@ void VulkanRendererAPI::PresentFrame(GraphicsContext *ctx) {
   info.pImageIndices = &context->Window.FrameIndex;
   VkResult err = vkQueuePresentKHR(context->Queue, &info);
   if (err == VK_ERROR_OUT_OF_DATE_KHR || err == VK_SUBOPTIMAL_KHR) {
-    // TODO: Swapchain rebuild
+    context->RebuildSwapchain = true;
     return;
   }
   ME_CORE_ASSERT(err == VK_SUCCESS,

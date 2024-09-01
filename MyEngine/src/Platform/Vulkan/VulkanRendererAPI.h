@@ -29,7 +29,7 @@ public:
                              uint32_t height);
   void CreateWindowCommandBuffers(VulkanContext *context);
 
-  virtual void BeginFrame(GraphicsContext *ctx) override;
+  virtual bool BeginFrame(GraphicsContext *ctx) override;
   virtual void EndFrame(GraphicsContext *ctx) override;
   virtual void PresentFrame(GraphicsContext *ctx) override;
 

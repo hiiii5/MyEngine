@@ -7,7 +7,8 @@ class Renderer {
 public:
   static void Init();
   static void Shutdown();
-  static void BeginFrame();
+  static void Update();
+  static bool BeginFrame();
   static void EndFrame();
   static void PresentFrame();
   static void WaitForIdle();

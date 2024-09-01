@@ -1,3 +1,4 @@
+#include "MyEngine/Renderer/Renderer.h"
 #include "mepch.h"
 
 #include "MyEngine/ImGui/ImGuiLayer.h"
@@ -103,8 +104,13 @@ void ImGuiLayer::End() {
   io.DisplaySize = ImVec2(window.GetWidth(), window.GetHeight());
 
   ImGui::Render();
-  ImGui_ImplVulkan_RenderDrawData(
-      ImGui::GetDrawData(), context->Window.GetCurrentFrame()->CommandBuffer);
+  ImDrawData *drawData = ImGui::GetDrawData();
+  const bool isMinimized =
+      (drawData->DisplaySize.x <= 0.0f || drawData->DisplaySize.y <= 0.0f);
+  if (!isMinimized) {
+    ImGui_ImplVulkan_RenderDrawData(
+        drawData, context->Window.GetCurrentFrame()->CommandBuffer);
+  }
 
   if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
     ImGui::UpdatePlatformWindows();

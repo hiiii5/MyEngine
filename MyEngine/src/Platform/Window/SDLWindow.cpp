@@ -7,6 +7,7 @@
 #include "MyEngine/Events/MouseEvent.h"
 #include "MyEngine/Renderer/GraphicsContext.h"
 #include "MyEngine/Renderer/Renderer.h"
+#include <SDL_video.h>
 
 // TODO: Import graphics context
 
@@ -25,19 +26,14 @@ static int windowEventCallback(void *pData, SDL_Event *e) {
     SDL_Window *win = SDL_GetWindowFromID(e->window.windowID);
 
     if (e->window.event == SDL_WINDOWEVENT_RESIZED) {
-
       int width = 0, height = 0;
       SDL_GetWindowSize(win, &width, &height);
-      data.Width = width;
-      data.Height = height;
-
       WindowResizeEvent event(width, height);
       data.EventCallback(event, (void *)e);
     }
 
     if (e->window.event == SDL_WINDOWEVENT_CLOSE) {
       WindowCloseEvent event;
-      ME_CORE_INFO("Closing window");
       data.EventCallback(event, (void *)e);
     }
   }
@@ -126,8 +122,22 @@ void SDLWindow::Shutdown() {
 void SDLWindow::OnUpdate() {
   // TODO: swap context buffer;
   SDL_PumpEvents();
+}
 
-  // m_GraphicsContext->SwapBuffers();
+unsigned int SDLWindow::GetWidth() const {
+  int width, height;
+  SDL_GetWindowSize(m_Window, &width, &height);
+  return width;
+}
+
+unsigned int SDLWindow::GetHeight() const {
+  int width, height;
+  SDL_GetWindowSize(m_Window, &width, &height);
+  return width;
+}
+
+bool SDLWindow::IsMinimized() const {
+  return SDL_GetWindowFlags(m_Window) & SDL_WINDOW_MINIMIZED;
 }
 
 void SDLWindow::SetVSync(bool enabled) { m_Data.VSync = enabled; }

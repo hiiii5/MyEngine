@@ -9,8 +9,13 @@ public:
   static void Init() { s_RendererAPI->Init(); }
   static void Shutdown() { s_RendererAPI->Shutdown(); }
 
-  static void BeginFrame(GraphicsContext *ctx) {
-    s_RendererAPI->BeginFrame(ctx);
+  static void SetViewport(uint32_t x, uint32_t y, uint32_t width,
+                          uint32_t height) {
+    s_RendererAPI->SetViewport(x, y, width, height);
+  }
+
+  static bool BeginFrame(GraphicsContext *ctx) {
+    return s_RendererAPI->BeginFrame(ctx);
   }
 
   static void EndFrame(GraphicsContext *ctx) { s_RendererAPI->EndFrame(ctx); }

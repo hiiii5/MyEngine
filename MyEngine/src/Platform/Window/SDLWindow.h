@@ -13,10 +13,12 @@ public:
   virtual ~SDLWindow();
   virtual void Init(const WindowProperties &properties) override;
 
-  void OnUpdate() override;
+  virtual void OnUpdate() override;
 
-  unsigned int GetWidth() const override { return m_Data.Width; }
-  unsigned int GetHeight() const override { return m_Data.Height; }
+  virtual unsigned int GetWidth() const override;
+  virtual unsigned int GetHeight() const override;
+
+  virtual bool IsMinimized() const override;
 
   void SetEventCallback(const EventCallbackFn &callback) override {
     m_Data.EventCallback = callback;

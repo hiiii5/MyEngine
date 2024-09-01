@@ -9,8 +9,15 @@ void Renderer::Init() { RenderCommand::Init(); }
 
 void Renderer::Shutdown() { RenderCommand::Shutdown(); }
 
-void Renderer::BeginFrame() {
-  RenderCommand::BeginFrame(
+void Renderer::Update() {
+  Application &app = Application::Get();
+  uint32_t width = app.GetWindow().GetWidth();
+  uint32_t height = app.GetWindow().GetHeight();
+  RenderCommand::SetViewport(0, 0, width, height);
+}
+
+bool Renderer::BeginFrame() {
+  return RenderCommand::BeginFrame(
       Application::Get().GetWindow().GetGraphicsContext());
 }
 

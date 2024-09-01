@@ -43,25 +43,26 @@ void Application::Run() {
     Timestep timestep = milliseconds - m_LastFrameTime;
     m_LastFrameTime = milliseconds;
 
+    if (m_Window->IsMinimized()) {
+      continue;
+    }
+
     for (Layer *layer : m_LayerStack) {
       layer->OnUpdate(timestep);
     }
 
-    Renderer::BeginFrame();
+    if (Renderer::BeginFrame()) {
+      m_ImGuiLayer->Begin();
+      for (Layer *layer : m_LayerStack) {
+        layer->OnImGuiRender();
+      }
+      m_ImGuiLayer->End();
 
-    m_ImGuiLayer->Begin();
-
-    for (Layer *layer : m_LayerStack) {
-      layer->OnImGuiRender();
+      Renderer::EndFrame();
+      Renderer::PresentFrame();
     }
 
-    m_ImGuiLayer->End();
-
-    Renderer::EndFrame();
-
     m_Window->OnUpdate();
-
-    Renderer::PresentFrame();
   }
 }
 
