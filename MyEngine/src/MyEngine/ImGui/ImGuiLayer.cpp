@@ -39,6 +39,7 @@ void ImGuiLayer::OnAttach() {
   // io.BackendFlags |= ImGuiBackendFlags_HasSetMousePos;
   io.ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;
   io.ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+  io.ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
 
   ImGui::StyleColorsDark();
 
@@ -104,6 +105,11 @@ void ImGuiLayer::End() {
   ImGui::Render();
   ImGui_ImplVulkan_RenderDrawData(
       ImGui::GetDrawData(), context->Window.GetCurrentFrame()->CommandBuffer);
+
+  if (io.ConfigFlags & ImGuiConfigFlags_ViewportsEnable) {
+    ImGui::UpdatePlatformWindows();
+    ImGui::RenderPlatformWindowsDefault();
+  }
 }
 
 void ImGuiLayer::OnEvent(Event &event, void *pData) {

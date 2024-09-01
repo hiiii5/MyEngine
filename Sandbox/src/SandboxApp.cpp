@@ -1,3 +1,4 @@
+#include "ExampleLayer.h"
 #include "MyEngine/Core/Application.h"
 #include <MyEngine.h>
 #include <MyEngine/Core/EntryPoint.h>
@@ -5,7 +6,9 @@
 class Sandbox : public MyEngine::Application {
 public:
   Sandbox(const MyEngine::ApplicationSpecification &specification)
-      : MyEngine::Application(specification) {}
+      : MyEngine::Application(specification) {
+    PushOverlay(new ExampleLayer());
+  }
 
   ~Sandbox() {}
 };

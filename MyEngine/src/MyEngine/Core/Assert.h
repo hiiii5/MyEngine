@@ -14,7 +14,9 @@
     }                                                                          \
   }
 #define ME_INTERNAL_ASSERT_WITH_MSG(type, check, ...)                          \
-  ME_INTERNAL_ASSERT_IMPL(type, check, "Assertion failed: {0}", __VA_ARGS__)
+  ME_INTERNAL_ASSERT_IMPL(                                                     \
+      type, check, "Assertion failed: {0} at {1}:{2}", __VA_ARGS__,            \
+      std::filesystem::path(__FILE__).filename().string(), __LINE__)
 #define ME_INTERNAL_ASSERT_NO_MSG(type, check)                                 \
   ME_INTERNAL_ASSERT_IMPL(type, check, "Assertion '{0}' failed at {1}:{2}",    \
                           ME_STRINGIFY_MACRO(check),                           \

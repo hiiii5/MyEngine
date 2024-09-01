@@ -24,14 +24,18 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 
 include("${CMAKE_SOURCE_DIR}/cmake/find_spdlog.cmake")
 find_spdlog()
+
 # -------------------------------------------
 # COMPILE/LINKING
 # -------------------------------------------
+
+file(GLOB SANDBOX_SOURCE "${CMAKE_SOURCE_DIR}/Sandbox/src/*.cpp")
+
 include_directories("${CMAKE_SOURCE_DIR}/MyEngine/src")
 link_directories(${CMAKE_BINARY_DIR}/bin)
-add_executable(Sandbox "${CMAKE_SOURCE_DIR}/Sandbox/src/SandboxApp.cpp")
+add_executable(Sandbox ${SANDBOX_SOURCE})
 # target_include_directories(Sandbox PRIVATE "${CMAKE_SOURCE_DIR}/MyEngine/src")
-target_link_libraries(Sandbox PRIVATE MyEngine)
+target_link_libraries(Sandbox PRIVATE ImGui MyEngine)
 
 if(CMAKE_GENERATOR MATCHES "Visual Studio")
   set_property(DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR} PROPERTY VS_STARTUP_PROJECT
