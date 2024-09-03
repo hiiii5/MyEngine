@@ -18,6 +18,8 @@ public:
   Application(const ApplicationSpecification &specification);
   virtual ~Application();
 
+  void Shutdown();
+
   void PushLayer(Layer *layer);
   void PushOverlay(Layer *layer);
 
@@ -40,6 +42,7 @@ private:
   ImGuiLayer *m_ImGuiLayer;
   ApplicationSpecification m_Specification;
   bool m_Running = true;
+  bool m_IsShuttingDown = false;
   LayerStack m_LayerStack;
 
   unsigned long m_LastFrameTime = 0.0f;

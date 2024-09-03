@@ -21,10 +21,15 @@ Application::Application(const ApplicationSpecification &specification) {
   PushOverlay(m_ImGuiLayer);
 }
 
-Application::~Application() {
-  Renderer::WaitForIdle();
-  m_LayerStack.Cleanup();
-  Renderer::Shutdown();
+Application::~Application() { Shutdown(); }
+
+void Application::Shutdown() {
+  if (!m_IsShuttingDown) {
+    m_IsShuttingDown = true;
+    Renderer::WaitForIdle();
+    m_LayerStack.Cleanup();
+    Renderer::Shutdown();
+  }
 }
 
 void Application::PushLayer(Layer *layer) {
