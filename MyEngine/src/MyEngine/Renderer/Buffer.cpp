@@ -19,7 +19,7 @@ Ref<VertexBuffer> VertexBuffer::Create(uint32_t size) {
   }
 }
 
-Ref<VertexBuffer> VertexBuffer::Create(float *vertices, uint32_t size) {
+Ref<VertexBuffer> VertexBuffer::Create(Vertex *vertices, uint32_t size) {
   switch (Renderer::GetAPI()) {
   case RendererAPI::API::Vulkan: {
     return CreateRef<VulkanVertexBuffer>(vertices, size);

@@ -8,7 +8,7 @@ namespace MyEngine {
 class VulkanVertexBuffer : public VertexBuffer {
 public:
   VulkanVertexBuffer(uint32_t size);
-  VulkanVertexBuffer(float *vertices, uint32_t size);
+  VulkanVertexBuffer(Vertex *vertices, uint32_t size);
   virtual ~VulkanVertexBuffer();
 
   virtual void Bind() const override;
@@ -32,10 +32,10 @@ public:
   VulkanIndexBuffer(uint32_t *indices, uint32_t count);
   virtual ~VulkanIndexBuffer();
 
-  virtual void Bind();
-  virtual void Unbind();
+  virtual void Bind() const override;
+  virtual void Unbind() const override;
 
-  virtual uint32_t GetCount() const { return m_Count; }
+  virtual uint32_t GetCount() const override { return m_Count; }
 
 private:
   VkBuffer m_Buffer;
@@ -86,10 +86,6 @@ public:
 
     res = vkAllocateMemory(device, &memAllocInfo, nullptr, &bufferMemory);
     ME_CORE_ASSERT(res == VK_SUCCESS, "Unable to allocate memory for buffer!");
-  }
-
-  static void BindBuffer(VkDevice device, VkBuffer buffer,
-                         VkDeviceMemory bufferMemory) {
     vkBindBufferMemory(device, buffer, bufferMemory, 0);
   }
 

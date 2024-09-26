@@ -31,4 +31,10 @@ void Renderer::PresentFrame() {
 }
 
 void Renderer::WaitForIdle() { RenderCommand::WaitForIdle(); }
+
+void Renderer::Submit(const Ref<VertexArray> &vertexArray) {
+  vertexArray->Bind();
+  RenderCommand::DrawIndexed(vertexArray);
+}
+
 } // namespace MyEngine

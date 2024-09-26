@@ -2,6 +2,7 @@
 
 #include "MyEngine/Core/Base.h"
 #include "MyEngine/Renderer/GraphicsContext.h"
+#include "MyEngine/Renderer/VertexArray.h"
 
 #include <glm/glm.hpp>
 
@@ -27,7 +28,7 @@ public:
   virtual void EndFrame(GraphicsContext *ctx) = 0;
   virtual void PresentFrame(GraphicsContext *ctx) = 0;
   virtual void WaitForIdle() = 0;
-  // virtual void DrawIndexed(const Ref<>)
+  virtual void DrawIndexed(const Ref<VertexArray> vertexArray) = 0;
 
   virtual void SetLineWidth(float width) = 0;
 

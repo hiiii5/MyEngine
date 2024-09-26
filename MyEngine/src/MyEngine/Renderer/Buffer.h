@@ -1,5 +1,8 @@
 #pragma once
 
+#include "MyEngine/Core/Base.h"
+#include "MyEngine/Renderer/Vertex.h"
+
 namespace MyEngine {
 enum class ShaderDataType {
   None = 0,
@@ -59,6 +62,11 @@ struct BufferElement {
   bool Normalized;
 
   BufferElement() = default;
+
+  BufferElement(ShaderDataType type, const std::string &name,
+                bool normalized = false)
+      : Name(name), Type(type), Size(ShaderDataTypeSize(type)), Offset(0),
+        Normalized(normalized) {}
 
   BufferElement(const std::string &name, ShaderDataType type,
                 bool normalized = false)
@@ -145,7 +153,7 @@ public:
   virtual void SetLayout(const BufferLayout &layout) = 0;
 
   static Ref<VertexBuffer> Create(uint32_t size);
-  static Ref<VertexBuffer> Create(float *vertices, uint32_t size);
+  static Ref<VertexBuffer> Create(Vertex *vertices, uint32_t size);
 };
 
 class IndexBuffer {

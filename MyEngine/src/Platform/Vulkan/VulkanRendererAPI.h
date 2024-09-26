@@ -3,6 +3,7 @@
 #include "MyEngine/Renderer/GraphicsContext.h"
 #include "MyEngine/Renderer/RendererAPI.h"
 
+#include "MyEngine/Renderer/VertexArray.h"
 #include "Platform/Vulkan/VulkanContext.h"
 
 namespace MyEngine {
@@ -32,6 +33,8 @@ public:
   virtual bool BeginFrame(GraphicsContext *ctx) override;
   virtual void EndFrame(GraphicsContext *ctx) override;
   virtual void PresentFrame(GraphicsContext *ctx) override;
+
+  virtual void DrawIndexed(const Ref<VertexArray> vertexArray) override;
 
 private:
   // +============+

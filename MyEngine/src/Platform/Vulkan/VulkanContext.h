@@ -27,7 +27,6 @@ struct VulkanWindow {
   VkSurfaceFormatKHR SurfaceFormat;
   VkPresentModeKHR PresentMode;
   VkRenderPass RenderPass;
-  VkPipeline Pipeline;
 
   bool UseDynamicRendering;
   bool ClearEnable;
@@ -102,8 +101,6 @@ public:
     this->Window.Frames = nullptr;
     this->Window.FrameSemaphores = nullptr;
 
-    vkDestroyPipeline(this->LogicalDevice, this->Window.Pipeline,
-                      this->AllocationCallback);
     vkDestroyRenderPass(this->LogicalDevice, this->Window.RenderPass,
                         this->AllocationCallback);
     vkDestroySwapchainKHR(this->LogicalDevice, this->Window.Swapchain,

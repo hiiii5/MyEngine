@@ -24,6 +24,9 @@ public:
   void PushOverlay(Layer *layer);
 
   Window &GetWindow() { return *m_Window; }
+  template <typename T> T *GetGraphicsContext() {
+    return static_cast<T *>(m_Window->GetGraphicsContext());
+  }
 
   static Application &Get() { return *s_Instance; }
 

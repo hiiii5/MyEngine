@@ -229,7 +229,8 @@ void VulkanRendererAPI::SetupVulkan(VulkanContext *context) {
   {
     ME_CORE_TRACE("Creating logical device for vulkan!");
     std::vector<const char *> deviceExtensions;
-    deviceExtensions.push_back("VK_KHR_swapchain");
+    deviceExtensions.push_back(VK_KHR_SWAPCHAIN_EXTENSION_NAME);
+    // deviceExtensions.push_back(VK_EXT_SHADER_OBJECT_EXTENSION_NAME);
 
     uint32_t propertiesCount;
     std::vector<VkExtensionProperties> properties;
@@ -821,6 +822,11 @@ void VulkanRendererAPI::PresentFrame(GraphicsContext *ctx) {
   // Get the next set of semaphores
   context->Window.SemaphoreIndex =
       (context->Window.SemaphoreIndex + 1) % context->Window.SemaphoreCount;
+}
+
+void VulkanRendererAPI::DrawIndexed(const Ref<VertexArray> vertexArray) {
+  vertexArray->Bind();
+  vertexArray->Draw();
 }
 
 } // namespace MyEngine

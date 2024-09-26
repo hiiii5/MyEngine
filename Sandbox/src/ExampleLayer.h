@@ -14,4 +14,11 @@ public:
   virtual void OnImGuiRender() override;
 
   virtual void OnEvent(MyEngine::Event &e, void *pData) override;
+
+private:
+  MyEngine::Ref<MyEngine::VertexArray> m_VertexArray;
+  MyEngine::Ref<MyEngine::Shader> m_Shader;
+
+  std::vector<MyEngine::Vertex> m_Vertices;
+  std::vector<uint32_t> m_Indices;
 };

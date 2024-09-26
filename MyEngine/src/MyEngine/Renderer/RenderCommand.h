@@ -2,6 +2,7 @@
 
 #include "MyEngine/Renderer/GraphicsContext.h"
 #include "MyEngine/Renderer/RendererAPI.h"
+#include "MyEngine/Renderer/VertexArray.h"
 
 namespace MyEngine {
 class RenderCommand {
@@ -25,6 +26,10 @@ public:
   }
 
   static void WaitForIdle() { s_RendererAPI->WaitForIdle(); }
+
+  static void DrawIndexed(const Ref<VertexArray> &vertexArray) {
+    s_RendererAPI->DrawIndexed(vertexArray);
+  }
 
 private:
   static Unique<RendererAPI> s_RendererAPI;

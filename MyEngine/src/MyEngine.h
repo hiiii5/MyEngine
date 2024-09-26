@@ -14,3 +14,7 @@
 #include "MyEngine/Core/MouseCodes.h"
 
 #include "MyEngine/Filesystem/Filesystem.h"
+
+#include "MyEngine/Renderer/Renderer.h"
+#include "MyEngine/Renderer/Shader.h"
+#include "MyEngine/Renderer/VertexArray.h"

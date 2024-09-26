@@ -1,6 +1,7 @@
 #pragma once
 
 #include "MyEngine/Renderer/RendererAPI.h"
+#include "MyEngine/Renderer/VertexArray.h"
 
 namespace MyEngine {
 class Renderer {
@@ -12,6 +13,8 @@ public:
   static void EndFrame();
   static void PresentFrame();
   static void WaitForIdle();
+
+  static void Submit(const Ref<VertexArray> &vertexArray);
 
   static RendererAPI::API GetAPI() { return RendererAPI::GetAPI(); }
 };
