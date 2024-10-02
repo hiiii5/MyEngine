@@ -4,25 +4,26 @@
 #include "MyEngine/Renderer/Vertex.h"
 #include "Platform/Vulkan/VulkanContext.h"
 #include "Platform/Vulkan/VulkanShader.h"
-#include "Platform/Vulkan/VulkanShaderModule.h"
+#include "Platform/Vulkan/VulkanShaderStage.h"
 
 #include <vulkan/vulkan.h>
 #include <vulkan/vulkan_core.h>
 
 namespace MyEngine {
-VulkanShader::VulkanShader(const std::vector<Ref<ShaderModule>> modules)
-    : m_Modules(std::move(modules)) {
+VulkanShader::VulkanShader(const std::string &name,
+                           const std::vector<Ref<ShaderStage>> stages)
+    : m_Name(name), m_Stages(std::move(stages)) {
   VulkanContext *context =
       Application::Get().GetGraphicsContext<VulkanContext>();
 
-  VkPipelineShaderStageCreateInfo shaderStages[m_Modules.size()];
-  for (int i = 0; i < m_Modules.size(); i++) {
-    VulkanShaderModule *module =
-        static_cast<VulkanShaderModule *>(m_Modules[i].get());
-    if (module == nullptr) {
+  VkPipelineShaderStageCreateInfo shaderStages[m_Stages.size()];
+  for (int i = 0; i < m_Stages.size(); i++) {
+    VulkanShaderStage *stage =
+        static_cast<VulkanShaderStage *>(stages[i].get());
+    if (stage == nullptr) {
       ME_CORE_ASSERT(false, "Shader module is null!");
     }
-    VkPipelineShaderStageCreateInfo info = module->GetStageInfo();
+    VkPipelineShaderStageCreateInfo info = stage->GetStageInfo();
     shaderStages[i] = info;
   }
 
@@ -126,7 +127,7 @@ VulkanShader::VulkanShader(const std::vector<Ref<ShaderModule>> modules)
 
   VkGraphicsPipelineCreateInfo pipelineInfo{};
   pipelineInfo.sType = VK_STRUCTURE_TYPE_GRAPHICS_PIPELINE_CREATE_INFO;
-  pipelineInfo.stageCount = m_Modules.size();
+  pipelineInfo.stageCount = m_Stages.size();
   pipelineInfo.pStages = shaderStages;
   pipelineInfo.pVertexInputState = &vertexInputInfo;
   pipelineInfo.pInputAssemblyState = &inputAssembly;
@@ -151,11 +152,11 @@ VulkanShader::~VulkanShader() {
 
   // TODO: Maybe move to the module so that its responsible for both creation
   // and deletion
-  for (int i = 0; i < m_Modules.size(); i++) {
-    vkDestroyShaderModule(context->LogicalDevice,
-                          static_cast<VulkanShaderModule *>(m_Modules[i].get())
-                              ->GetShaderModule(),
-                          nullptr);
+  for (int i = 0; i < m_Stages.size(); i++) {
+    vkDestroyShaderModule(
+        context->LogicalDevice,
+        static_cast<VulkanShaderStage *>(m_Stages[i].get())->GetShaderModule(),
+        nullptr);
   }
 
   vkDestroyPipelineLayout(context->LogicalDevice, m_PipelineLayout,

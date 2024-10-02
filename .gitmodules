@@ -1,3 +1,6 @@
 [submodule "MyEngine/vendor/imgui"]
 	path = MyEngine/vendor/imgui
 	url = https://github.com/ocornut/imgui.git
+[submodule "MyEngine/vendor/shaderc"]
+	path = MyEngine/vendor/shaderc
+	url = https://github.com/google/shaderc.git

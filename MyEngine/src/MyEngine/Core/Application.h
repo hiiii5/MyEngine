@@ -11,6 +11,7 @@ int main(int argc, char **argv);
 namespace MyEngine {
 struct ApplicationSpecification {
   std::string Name = "MyEngine Application";
+  std::vector<unsigned char> Version = {'0', '0', '5'};
 };
 
 class MYENGINE_API Application {

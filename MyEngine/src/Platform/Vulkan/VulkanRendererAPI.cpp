@@ -133,6 +133,18 @@ void VulkanRendererAPI::SetupVulkan(VulkanContext *context) {
 
     createInfo.enabledExtensionCount = (uint32_t)instanceExtensions.size();
     createInfo.ppEnabledExtensionNames = instanceExtensions.data();
+
+    Application &app = Application::Get();
+
+    VkApplicationInfo appInfo{};
+    appInfo.sType = VK_STRUCTURE_TYPE_APPLICATION_INFO;
+    appInfo.pApplicationName = app.GetSpecification().Name.c_str();
+    appInfo.engineVersion = VK_MAKE_VERSION(0, 5, 0);
+    appInfo.pEngineName = "MyEngine";
+    appInfo.engineVersion = VK_MAKE_VERSION(0, 1, 0);
+    appInfo.apiVersion = VK_API_VERSION_1_3;
+
+    createInfo.pApplicationInfo = &appInfo;
     err = vkCreateInstance(&createInfo, context->AllocationCallback,
                            &context->Instance);
     ME_CORE_ASSERT(err == VK_SUCCESS,
@@ -255,6 +267,7 @@ void VulkanRendererAPI::SetupVulkan(VulkanContext *context) {
     createInfo.pQueueCreateInfos = queueInfo;
     createInfo.enabledExtensionCount = (uint32_t)deviceExtensions.size();
     createInfo.ppEnabledExtensionNames = deviceExtensions.data();
+
     err = vkCreateDevice(context->PhysicalDevice, &createInfo,
                          context->AllocationCallback, &context->LogicalDevice);
     ME_CORE_ASSERT(err == VK_SUCCESS,

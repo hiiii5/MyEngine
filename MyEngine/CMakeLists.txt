@@ -49,6 +49,8 @@ find_sdl()
 include("${CMAKE_SOURCE_DIR}/cmake/find_spdlog.cmake")
 find_spdlog()
 
+add_subdirectory("${CMAKE_SOURCE_DIR}/MyEngine/vendor/shaderc")
+
 # IMGUI is special
 set(IMGUI_PATH "${CMAKE_SOURCE_DIR}/MyEngine/vendor/imgui")
 file(
@@ -99,7 +101,7 @@ add_dependencies(MyEngine Shaders)
 
 if(LINUX)
   target_link_libraries(MyEngine PRIVATE ImGui SDL2::SDL2 spdlog::spdlog
-                                         Threads::Threads)
+                                         Threads::Threads shaderc_combined)
 else()
   target_link_libraries(MyEngine PRIVATE ImGui SDL2::SDL2 spdlog::spdlog)
 endif()

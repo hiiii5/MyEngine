@@ -5,10 +5,11 @@
 #include "Platform/Vulkan/VulkanShader.h"
 
 namespace MyEngine {
-Ref<Shader> Shader::Create(const std::vector<Ref<ShaderModule>> modules) {
+Ref<Shader> Shader::Create(const std::string &name,
+                           const std::vector<Ref<ShaderStage>> modules) {
   switch (RendererAPI::GetAPI()) {
   case RendererAPI::API::Vulkan: {
-    return CreateRef<VulkanShader>(modules);
+    return CreateRef<VulkanShader>(name, modules);
   }
 
   default: {

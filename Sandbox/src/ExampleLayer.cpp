@@ -24,16 +24,16 @@ ExampleLayer::ExampleLayer() {
       MyEngine::IndexBuffer::Create(m_Indices.data(), m_Indices.size());
   m_VertexArray->SetIndexBuffer(indexBuffer);
 
-  MyEngine::Ref<MyEngine::ShaderModule> vertModule =
-      MyEngine::ShaderModule::Create("shaders/shader.vert.spv",
-                                     MyEngine::ShaderModule::Vertex);
-  MyEngine::Ref<MyEngine::ShaderModule> fragModule =
-      MyEngine::ShaderModule::Create("shaders/shader.frag.spv",
-                                     MyEngine::ShaderModule::Fragment);
+  MyEngine::Ref<MyEngine::ShaderStage> vertModule =
+      MyEngine::ShaderStage::Create("shaders/vertexColor.vert.glsl",
+                                    MyEngine::ShaderStage::Vertex);
+  MyEngine::Ref<MyEngine::ShaderStage> fragModule =
+      MyEngine::ShaderStage::Create("shaders/vertexColor.frag.glsl",
+                                    MyEngine::ShaderStage::Fragment);
 
-  std::vector<MyEngine::Ref<MyEngine::ShaderModule>> modules{vertModule,
-                                                             fragModule};
-  m_Shader = MyEngine::Shader::Create(modules);
+  std::vector<MyEngine::Ref<MyEngine::ShaderStage>> modules{vertModule,
+                                                            fragModule};
+  m_Shader = MyEngine::Shader::Create("VertexColorShader", modules);
 }
 
 void ExampleLayer::OnAttach() {}
@@ -91,7 +91,10 @@ void ExampleLayer::OnImGuiRender() {
       }
       ImGui::Separator();
       if (ImGui::MenuItem("Quit", "Alt+F4")) {
-        // MyEngine::Application::Get().Shutdown();
+        ImGui::EndMenu();
+        ImGui::End();
+        MyEngine::Application::Get().Shutdown();
+        return;
       }
       ImGui::EndMenu();
     }
@@ -101,14 +104,6 @@ void ExampleLayer::OnImGuiRender() {
 
   bool showTriangleEditMenu;
   if (ImGui::Begin("Color Editor", &showTriangleEditMenu)) {
-    // ImGui::ColorEdit4("Color0", &m_Vertices[0].Color.x,
-    //                   ImGuiColorEditFlags_NoAlpha);
-    // ImGui::ColorEdit4("Color1", &m_Vertices[1].Color.x,
-    //                   ImGuiColorEditFlags_NoAlpha);
-    // ImGui::ColorEdit4("Color2", &m_Vertices[2].Color.x,
-    //                   ImGuiColorEditFlags_NoAlpha);
-    // ImGui::ColorEdit4("Color3", &m_Vertices[3].Color.x,
-    //                   ImGuiColorEditFlags_NoAlpha);
     for (int i = 0; i < m_Vertices.size(); i++) {
       std::string label = "Color" + std::to_string(i);
       ImGui::ColorEdit4(label.c_str(), &m_Vertices[i].Color.x,
