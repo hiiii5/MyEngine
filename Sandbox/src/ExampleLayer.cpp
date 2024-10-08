@@ -2,47 +2,44 @@
 
 #include "imgui.h"
 
+using namespace MyEngine;
+
 ExampleLayer::ExampleLayer() {
-  m_VertexArray = MyEngine::VertexArray::Create();
+  m_VertexArray = VertexArray::Create();
 
-  m_Vertices = {{{-0.5f, -0.5f}, {1.0f, 0.0f, 0.0f}},
-                {{0.5f, -0.5f}, {0.0f, 1.0f, 0.0f}},
-                {{0.5f, 0.5f}, {0.0f, 0.0f, 1.0f}},
-                {{-0.5f, 0.5f}, {1.0f, 1.0f, 1.0f}}};
+  m_Vertices = {{{-0.5f, -0.5f, 0.0f}, {1.0f, 0.0f, 0.0f, 1.0f}},
+                {{0.5f, -0.5f, 0.0f}, {0.0f, 1.0f, 0.0f, 1.0f}},
+                {{0.5f, 0.5f, 0.0f}, {0.0f, 0.0f, 1.0f, 1.0f}},
+                {{-0.5f, 0.5f, 0.0f}, {1.0f, 1.0f, 1.0f, 1.0f}}};
 
-  MyEngine::Ref<MyEngine::VertexBuffer> vertexBuffer =
-      MyEngine::VertexBuffer::Create(m_Vertices.data(), m_Vertices.size());
-  MyEngine::BufferLayout layout = {
-      {MyEngine::ShaderDataType::Float2, "a_position"},
-      {MyEngine::ShaderDataType::Float3, "a_color"}};
+  Ref<VertexBuffer> vertexBuffer =
+      VertexBuffer::Create(m_Vertices.data(), m_Vertices.size());
+  BufferLayout layout = {{ShaderDataType::Float3, "a_position"},
+                         {ShaderDataType::Float4, "a_color"}};
 
   vertexBuffer->SetLayout(layout);
   m_VertexArray->AddVertexBuffer(vertexBuffer);
 
   m_Indices = {0, 1, 2, 2, 3, 0};
-  MyEngine::Ref<MyEngine::IndexBuffer> indexBuffer =
-      MyEngine::IndexBuffer::Create(m_Indices.data(), m_Indices.size());
+  Ref<MyEngine::IndexBuffer> indexBuffer =
+      IndexBuffer::Create(m_Indices.data(), m_Indices.size());
   m_VertexArray->SetIndexBuffer(indexBuffer);
 
-  MyEngine::Ref<MyEngine::ShaderStage> vertModule =
-      MyEngine::ShaderStage::Create("shaders/vertexColor.vert.glsl",
-                                    MyEngine::ShaderStage::Vertex);
-  MyEngine::Ref<MyEngine::ShaderStage> fragModule =
-      MyEngine::ShaderStage::Create("shaders/vertexColor.frag.glsl",
-                                    MyEngine::ShaderStage::Fragment);
+  Ref<MyEngine::ShaderStage> vertModule =
+      ShaderStage::Create("shaders/vertexColor.vert.glsl", ShaderStage::Vertex);
+  Ref<MyEngine::ShaderStage> fragModule = ShaderStage::Create(
+      "shaders/vertexColor.frag.glsl", ShaderStage::Fragment);
 
-  std::vector<MyEngine::Ref<MyEngine::ShaderStage>> modules{vertModule,
-                                                            fragModule};
-  m_Shader = MyEngine::Shader::Create("VertexColorShader", modules);
+  std::vector<Ref<MyEngine::ShaderStage>> modules{vertModule, fragModule};
+  m_Shader = Shader::Create("VertexColorShader", modules);
 }
 
 void ExampleLayer::OnAttach() {}
 
 void ExampleLayer::OnDetach() {}
 
-void ExampleLayer::OnUpdate(MyEngine::Timestep ts) {
-  m_Shader->Bind();
-  MyEngine::Renderer::Submit(m_VertexArray);
+void ExampleLayer::OnUpdate(Timestep ts) {
+  Renderer::Submit(m_Shader, m_VertexArray);
 }
 
 void ExampleLayer::OnImGuiRender() {
@@ -93,7 +90,7 @@ void ExampleLayer::OnImGuiRender() {
       if (ImGui::MenuItem("Quit", "Alt+F4")) {
         ImGui::EndMenu();
         ImGui::End();
-        MyEngine::Application::Get().Shutdown();
+        Application::Get().Shutdown();
         return;
       }
       ImGui::EndMenu();
@@ -115,4 +112,4 @@ void ExampleLayer::OnImGuiRender() {
   ImGui::End();
 }
 
-void ExampleLayer::OnEvent(MyEngine::Event &e, void *pData) {}
+void ExampleLayer::OnEvent(Event &e, void *pData) {}

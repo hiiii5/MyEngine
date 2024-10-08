@@ -171,4 +171,12 @@ void VulkanShader::Bind() {
   vkCmdBindPipeline(context->Window.GetCurrentFrame()->CommandBuffer,
                     VK_PIPELINE_BIND_POINT_GRAPHICS, m_ShaderPipeline);
 }
+
+/* void SetInt(const std::string &name, int value) {}
+void SetIntArray(const std::string &name, int *value, uint32_t count) {}
+void SetFloat(const std::string &name, float value) {}
+void SetFloat2(const std::string &name, const Vector2 &value) {}
+void SetFloat3(const std::string &name, const Vector3 &value) {}
+void SetFloat4(const std::string &name, const Vector4 &value) {}
+void SetMat4(const std::string &name, const Matrix4 &value) {} */
 } // namespace MyEngine

@@ -2,7 +2,7 @@
 
 #include "MyEngine/Core/Window.h"
 #include "MyEngine/Renderer/RendererAPI.h"
-#include "Platform/Window/SDLWindow.h"
+#include "Platform/SDL/SDLWindow.h"
 
 namespace MyEngine {
 Unique<Window> Window::Create(const WindowProperties &properties) {

@@ -1,12 +1,11 @@
 #include "mepch.h"
 
-#include "Platform/Window/SDLWindow.h"
+#include "Platform/SDL/SDLWindow.h"
 
 #include "MyEngine/Events/ApplicationEvent.h"
 #include "MyEngine/Events/KeyEvent.h"
 #include "MyEngine/Events/MouseEvent.h"
 #include "MyEngine/Renderer/GraphicsContext.h"
-#include "MyEngine/Renderer/Renderer.h"
 #include <SDL_video.h>
 
 // TODO: Import graphics context
@@ -38,7 +37,7 @@ static int windowEventCallback(void *pData, SDL_Event *e) {
     }
   }
   case SDL_KEYDOWN: {
-    Key::KeyCode code = (Key::KeyCode)e->key.keysym.sym;
+    KeyCode code = (KeyCode)e->key.keysym.sym;
 
     if (e->key.repeat == 0) {
       KeyPressedEvent keyPressEvent(code, false);
@@ -50,7 +49,7 @@ static int windowEventCallback(void *pData, SDL_Event *e) {
     break;
   }
   case SDL_KEYUP: {
-    KeyReleasedEvent keyReleaseEvent((Key::KeyCode)e->key.keysym.sym);
+    KeyReleasedEvent keyReleaseEvent((KeyCode)e->key.keysym.sym);
     data.EventCallback(keyReleaseEvent, (void *)e);
     break;
   }

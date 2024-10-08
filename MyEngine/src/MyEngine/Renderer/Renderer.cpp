@@ -32,7 +32,9 @@ void Renderer::PresentFrame() {
 
 void Renderer::WaitForIdle() { RenderCommand::WaitForIdle(); }
 
-void Renderer::Submit(const Ref<VertexArray> &vertexArray) {
+void Renderer::Submit(const Ref<Shader> &shader,
+                      const Ref<VertexArray> &vertexArray) {
+  shader->Bind();
   vertexArray->Bind();
   RenderCommand::DrawIndexed(vertexArray);
 }

@@ -71,7 +71,7 @@ void VulkanVertexBuffer::Unbind() const {
                          VK_NULL_HANDLE, offsets);
 }
 
-void VulkanVertexBuffer::SetData(const void *data, uint32_t size) {
+void VulkanVertexBuffer::SetData(const Vertex *pData, uint32_t size) {
   VulkanContext *context = static_cast<VulkanContext *>(
       Application::Get().GetWindow().GetGraphicsContext());
 
@@ -86,10 +86,10 @@ void VulkanVertexBuffer::SetData(const void *data, uint32_t size) {
                                        VK_MEMORY_PROPERTY_HOST_COHERENT_BIT,
                                    stagingBuffer, stagingBufferMemory);
 
-  void *pdata;
+  void *pStagingData;
   vkMapMemory(context->LogicalDevice, stagingBufferMemory, 0, bufferSize, 0,
-              &pdata);
-  memcpy(pdata, data, (unsigned long long)bufferSize);
+              &pStagingData);
+  memcpy(pStagingData, pData, (unsigned long long)bufferSize);
   vkUnmapMemory(context->LogicalDevice, stagingBufferMemory);
 
   VulkanBufferHelper::CopyBuffer(

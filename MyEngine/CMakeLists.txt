@@ -72,8 +72,7 @@ target_link_libraries(ImGui PRIVATE SDL2::SDL2 Vulkan::Vulkan)
 # -------------------------------------------
 # GLSL TO SPIRV
 # -------------------------------------------
-include("${CMAKE_SOURCE_DIR}/cmake/compile_shaders.cmake")
-compile_shaders()
+# include("${CMAKE_SOURCE_DIR}/cmake/compile_shaders.cmake") compile_shaders()
 # -------------------------------------------
 
 # -------------------------------------------
@@ -97,7 +96,7 @@ include_directories("${CMAKE_SOURCE_DIR}/MyEngine/src")
 target_precompile_headers(MyEngine PRIVATE
                           "${CMAKE_SOURCE_DIR}/MyEngine/src/mepch.h")
 
-add_dependencies(MyEngine Shaders)
+# add_dependencies(MyEngine Shaders)
 
 if(LINUX)
   target_link_libraries(MyEngine PRIVATE ImGui SDL2::SDL2 spdlog::spdlog
