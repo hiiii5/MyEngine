@@ -17,7 +17,7 @@ Be sure to clone the git submodules before building from source. The shaderc lib
 
 The build script is used to build the engine and testing sandbox.
 
-When inside the MyEngine directory call:
+When inside the top level directory call:
 ```bash
 ./scripts/build.sh -c Debug
 ```
