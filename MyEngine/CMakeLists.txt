@@ -88,7 +88,7 @@ else(WIN32)
   link_libraries(${Vulkan_LIBRARY} ${CMAKE_THREAD_LIBS_INIT})
 endif(WIN32)
 
-add_library(MyEngine SHARED ${SOURCE})
+add_library(MyEngine STATIC ${SOURCE})
 
 target_compile_definitions(MyEngine PUBLIC $<$<CONFIG:Debug>:ME_DEBUG>)
 
