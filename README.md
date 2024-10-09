@@ -5,16 +5,13 @@ This is my sandbox game engine to teach myself engine development. It is a hobby
 # Dependencies
 
 Any dependencies not already on the host system at their respective versions
-will automatically be fetched via cmake. One exclusion is for compiling shaders.
-GlslangValidator is required for this and is bundled with the VulkanSDK.
-If you are rely on fetch content for Vulkan, be sure to install glslangValidator
-to your local path.
+will automatically be fetched via cmake. All submodules for the engine are located in the `/MyEngine/vendor` folder.
 
-- [fmt](https://github.com/fmtlib/fmt)
+Be sure to clone the git submodules before building from source. The shaderc library requires running `/MyEngine/vendor/shaderc/utils/git-sync-deps`.
+
 - [glm](http://github.com/g-truc/glm.git)
 - [SDL2](https://github.com/libsdl-org/SDL.git)
 - [Vulkan](https://github.com/KhronosGroup/Vulkan-Hpp.git)
-- [glslangValidator](https://github.com/KhronosGroup/glslang)
 
 # Building From Source (CMAKE)
 
